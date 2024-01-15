@@ -1,19 +1,20 @@
 <template>
   <div class="container">
     <div class="title">
-      <p>AI Generate</p>
+      <p>Image-Generate.</p>
     </div>
     <div class="images">
-      <Images>
-        <img v-for="(image,index) in images" :key="index" :src="image.image" alt="">
-        </Images>
+      <Images :photos="images"></Images>
     </div>
     <div class="send">
-      <input type="text" ref="text" placeholder="Ask as you want">
-      <button :disabled="disabled" ref="sendbtn">Send</button>
+      <input type="text" ref="text" v-model="text" placeholder="Ask as you want">
+      <button :disabled="disabled" @click="generate" ref="sendbtn">
+        <span v-if="!show">Send</span>
+        <span v-else><img src="./assets/loadingSend.gif" width="70" height="70" style="margin-top: -15px; margin-left: -10px;" alt=""></span>
+      </button>
     </div>
   </div>
-</template>
+</template> 
 
 <script>
 import Images from './components/Images.vue';
@@ -24,7 +25,46 @@ export default {
   data(){
     return{
       disabled:true,
+      text:'',
+      show:false,
+      images:""
       // images:[{image:"src/assets/p.png"},{image:"src/assets/p.png"},{image:"src/assets/p.png"},{image:"src/assets/p.png"},{image:"src/assets/p.png"}]
+    }
+  },
+  methods:{
+    generate(){
+      const origintext = this.text;
+      this.show = true;
+      this.text = '';
+      this.$refs.text.focus();
+      try{
+        const apikey="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";
+        const fetchoptions={
+          method:"POST",
+          headers:{
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apikey}`
+          },
+          body:JSON.stringify({
+            "prompt": origintext,
+          })
+        };
+
+         fetch("https://api.openai.com/v1/images/generations", fetchoptions)
+         .then(response=>response.json())
+         .then(data=>{
+            console.log(data);
+            console.log(data.data[0].url);
+            this.images={image:data.data[0].url}
+            this.show = false;
+          })
+          .catch(err=>console.log(err))
+        
+        
+      }
+      catch(err){
+        console.log(err);
+      }
     }
   },
   mounted(){
@@ -37,6 +77,7 @@ export default {
     })
   }
 
+  
 }
 </script>
 
@@ -67,11 +108,7 @@ overflow: auto;
 z-index: 0;
 
 }
-.images img{
-max-width: 350px;
-margin: 5px;
-border-radius: 20px;
-}
+
 .send {
   display: flex;
   align-self:center;
