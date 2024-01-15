@@ -1,11 +1,14 @@
 <template>
   <!-- <slot>  -->
-    <div v-if="!photos.image==''"  id="images" >
-      <img :src="photos.image" alt="">
-    </div>
-    <div v-else class="imageDefault">
+  
+    <div class="imageDefault">
+      <!-- <div > -->
+      <img v-if="!photos.image==''" id="images" :src="photos.image" alt="">
+    <!-- </div> -->
+      <div v-else>
       <img src="../assets/People.gif" alt="">
       <p>Ask as you want</p>
+    </div>
     </div>
   <!-- </slot> -->
 
@@ -19,8 +22,8 @@ export default {
 </script>
 
 <style scoped>
-#images img{
-max-width: 350px;
+#images{
+max-width: 90%;
 margin: 5px;
 border-radius: 20px;
 }
@@ -33,7 +36,7 @@ border-radius: 20px;
 }
 .imageDefault img{
   width: 100%;
-  height: 100%;
+  height: 90%;
 }
 p{
   font-size: 2rem;

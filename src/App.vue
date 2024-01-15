@@ -12,12 +12,15 @@
         <span v-if="!show">Send</span>
         <span v-else><img src="./assets/loadingSend.gif" width="70" height="70" style="margin-top: -15px; margin-left: -10px;" alt=""></span>
       </button>
+      <button @click="downloadImage">Download Image</button>
+
     </div>
   </div>
 </template> 
 
 <script>
 import Images from './components/Images.vue';
+
 export default {
   components:{
     Images
@@ -32,6 +35,14 @@ export default {
     }
   },
   methods:{
+    async downloadImage() {
+      try {
+        const response = await fetch('http://localhost:5174/dowimage');
+        console.log(await response.text());
+      } catch (error) {
+        console.error('Error downloading image', error);
+      }
+    },
     generate(){
       const origintext = this.text;
       this.show = true;
